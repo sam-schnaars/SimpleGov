@@ -5,6 +5,7 @@ type DonorData = {
   id: number;
   name: string;
   amount: string;
+  numericAmount: number; // Added for proper sorting
   party: string;
 };
 
@@ -15,28 +16,39 @@ type LegislationData = {
   sponsoredBy: string;
 };
 
-// Mock data for political donors
+// Helper function to convert donation strings to numeric values
+const convertAmountToNumber = (amountStr: string): number => {
+  const valueStr = amountStr.replace(/[$,]/g, '');
+  if (valueStr.endsWith('M')) {
+    return parseFloat(valueStr.slice(0, -1)) * 1000000;
+  } else if (valueStr.endsWith('K')) {
+    return parseFloat(valueStr.slice(0, -1)) * 1000;
+  }
+  return parseFloat(valueStr);
+};
+
+// Updated mock data for political donors with numericAmount
 const donorMockData: DonorData[] = [
-  { id: 1, name: "Citizens for Progress", amount: "$1.2M", party: "Democratic" },
-  { id: 2, name: "Freedom Foundation", amount: "$950K", party: "Republican" },
-  { id: 3, name: "United Workers PAC", amount: "$780K", party: "Democratic" },
-  { id: 4, name: "National Business Alliance", amount: "$1.5M", party: "Republican" },
-  { id: 5, name: "Healthcare for All", amount: "$650K", party: "Democratic" },
-  { id: 6, name: "Tech Coalition", amount: "$2.1M", party: "Democratic" },
-  { id: 7, name: "Energy Independence Fund", amount: "$1.3M", party: "Republican" },
-  { id: 8, name: "American Teachers Union", amount: "$540K", party: "Democratic" },
+  { id: 1, name: "Citizens for Progress", amount: "$1.2M", numericAmount: 1200000, party: "Democratic" },
+  { id: 2, name: "Freedom Foundation", amount: "$950K", numericAmount: 950000, party: "Republican" },
+  { id: 3, name: "United Workers PAC", amount: "$780K", numericAmount: 780000, party: "Democratic" },
+  { id: 4, name: "National Business Alliance", amount: "$1.5M", numericAmount: 1500000, party: "Republican" },
+  { id: 5, name: "Healthcare for All", amount: "$650K", numericAmount: 650000, party: "Democratic" },
+  { id: 6, name: "Tech Coalition", amount: "$2.1M", numericAmount: 2100000, party: "Democratic" },
+  { id: 7, name: "Energy Independence Fund", amount: "$1.3M", numericAmount: 1300000, party: "Republican" },
+  { id: 8, name: "American Teachers Union", amount: "$540K", numericAmount: 540000, party: "Democratic" },
 ];
 
-// Mock data for legislation
+// Updated mock data for legislation (more current bills and statuses)
 const legislationMockData: LegislationData[] = [
-  { id: 1, billName: "Clean Energy Act", status: "Passed", sponsoredBy: "Sen. Johnson" },
-  { id: 2, billName: "Infrastructure Bill H.R. 3684", status: "In Committee", sponsoredBy: "Rep. Williams" },
-  { id: 3, billName: "Fair Elections Reform", status: "Failed", sponsoredBy: "Sen. Martinez" },
-  { id: 4, billName: "Tax Relief Act", status: "Pending Vote", sponsoredBy: "Rep. Anderson" },
-  { id: 5, billName: "Education Funding Bill", status: "Passed", sponsoredBy: "Sen. Thompson" },
-  { id: 6, billName: "Healthcare Accessibility Act", status: "In Committee", sponsoredBy: "Sen. Garcia" },
-  { id: 7, billName: "Veterans Benefits Expansion", status: "Passed", sponsoredBy: "Rep. Wilson" },
-  { id: 8, billName: "Digital Privacy Protection", status: "Pending Vote", sponsoredBy: "Sen. Lee" },
+  { id: 1, billName: "Climate Action Plan", status: "Passed", sponsoredBy: "Sen. Johnson" },
+  { id: 2, billName: "Infrastructure Investment Act", status: "In Committee", sponsoredBy: "Rep. Williams" },
+  { id: 3, billName: "Electoral Reform Bill", status: "Failed", sponsoredBy: "Sen. Martinez" },
+  { id: 4, billName: "Small Business Tax Relief", status: "Pending Vote", sponsoredBy: "Rep. Anderson" },
+  { id: 5, billName: "Education Funding Act", status: "Passed", sponsoredBy: "Sen. Thompson" },
+  { id: 6, billName: "Affordable Healthcare Act", status: "In Committee", sponsoredBy: "Sen. Garcia" },
+  { id: 7, billName: "Veterans Support Act", status: "Passed", sponsoredBy: "Rep. Wilson" },
+  { id: 8, billName: "Digital Privacy Act", status: "Pending Vote", sponsoredBy: "Sen. Lee" },
 ];
 
 // Comment type
@@ -47,10 +59,11 @@ type Comment = {
   timestamp: string;
 };
 
-// Mock comments
+// Updated mock comments with more recent analysis
 const initialComments: Comment[] = [
-  { id: 1, author: "Policy Analyst", text: "There's a strong correlation between the Clean Energy Act passage and donations from environmental groups.", timestamp: "2025-03-20 09:15" },
-  { id: 2, author: "Political Researcher", text: "Interesting that the Tax Relief Act has bipartisan sponsorship despite the polarized funding.", timestamp: "2025-03-20 10:22" },
+  { id: 1, author: "Policy Analyst", text: "The Climate Action Plan passage correlates with significant donations from both Tech Coalition and environmental interests.", timestamp: "2025-03-19 14:32" },
+  { id: 2, author: "Political Researcher", text: "Small Business Tax Relief has bipartisan support despite polarized funding sources.", timestamp: "2025-03-20 09:15" },
+  { id: 3, author: "Data Scientist", text: "Democratic donors contributed 54% of the total funding shown, with Tech Coalition being the largest single contributor.", timestamp: "2025-03-20 11:47" },
 ];
 
 const App = () => {
@@ -72,13 +85,21 @@ const App = () => {
   const [donorDropdownOpen, setDonorDropdownOpen] = useState(false);
   const [legislationDropdownOpen, setLegislationDropdownOpen] = useState(false);
 
-  // Handle sorting for donor data
+  // Handle sorting for donor data with special handling for amount
   const handleDonorSort = (field: keyof DonorData, direction: "asc" | "desc") => {
     setDonorSortField(field);
     setDonorSortDirection(direction);
     setDonorDropdownOpen(false);
     
     const sortedData = [...donorData].sort((a, b) => {
+      // Special handling for amount field to use numericAmount
+      if (field === "amount") {
+        return direction === "asc" 
+          ? a.numericAmount - b.numericAmount
+          : b.numericAmount - a.numericAmount;
+      }
+      
+      // Standard string comparison for other fields
       if (a[field] < b[field]) return direction === "asc" ? -1 : 1;
       if (a[field] > b[field]) return direction === "asc" ? 1 : -1;
       return 0;
@@ -125,6 +146,7 @@ const App = () => {
       {/* Header */}
       <header className="bg-purple-700 text-white p-4 shadow-md">
         <h1 className="text-4xl font-bold text-center">SimpleGov</h1>
+        <p className="text-center text-white-800 text-sm mt-1">March 2025</p>
       </header>
 
       {/* Main Content */}
@@ -141,7 +163,8 @@ const App = () => {
                     className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md flex items-center"
                     onClick={() => setDonorDropdownOpen(!donorDropdownOpen)}
                   >
-                    Sort By: {donorSortField.charAt(0).toUpperCase() + donorSortField.slice(1)} 
+                    Sort By: {donorSortField === "amount" ? "Amount" : 
+                              donorSortField.charAt(0).toUpperCase() + donorSortField.slice(1)}
                     <span className="ml-1">{donorSortDirection === "asc" ? "↑" : "↓"}</span>
                   </button>
                   
@@ -225,13 +248,9 @@ const App = () => {
               </div>
             </div>
 
-            {/* Center Circle - Perfectly centered */}
+            {/* Center Circle - Placeholder image for political data visualization */}
             <div className="w-64 h-64 flex-shrink-0 rounded-full bg-purple-600 flex items-center justify-center shadow-lg border-4 border-white">
-              <img 
-                src="https://democraticgovernors.org/wp-content/uploads/2019/01/v3_NEWSOM_BLUE.png" 
-                alt="Political Campaign Logo" 
-                className="w-full h-full object-cover rounded-full"
-              />
+              <img src="https://democraticgovernors.org/wp-content/uploads/2019/01/v3_NEWSOM_BLUE.png" alt="Political Data" className="w-64 h-64 rounded-full" />
             </div>
 
             {/* Right Rectangle - Legislation */}
@@ -371,7 +390,7 @@ const App = () => {
 
       {/* Footer */}
       <footer className="bg-purple-700 text-white p-4 text-center">
-        <p>© 2025 Political Data Dashboard. All rights reserved.</p>
+        <p>© 2025 SimpleGov Political Data Dashboard. All rights reserved.</p>
       </footer>
     </div>
   );
