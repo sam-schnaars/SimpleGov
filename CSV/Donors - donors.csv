@@ -1,0 +1,23 @@
+```csv
+id,name,amount,party,analysis
+1,"California Teachers Association","$3.5M",Democratic,"Major education union that consistently supports Democratic candidates. Their large donation suggests strong alignment with Newsom's education policies."
+2,"Blue Shield of California","$2.1M",Democratic,"Healthcare provider with interest in state healthcare policy. Donation coincides with Newsom's healthcare expansion initiatives."
+3,"Service Employees International Union","$1.8M",Democratic,"Represents healthcare workers and public employees. Donation indicates labor support for Newsom's worker protection policies."
+4,"Netflix","$1.5M",Democratic,"Tech industry support reflecting Silicon Valley's alignment with Newsom's innovation policies and digital economy initiatives."
+5,"California Nurses Association","$980K",Democratic,"Healthcare worker advocacy group supporting Newsom's healthcare expansion and pandemic response policies."
+6,"Dignity Health","$875K",Democratic,"Healthcare provider with interests in healthcare regulations and MediCal funding formulas."
+7,"California Association of Realtors","$750K",Democratic,"Real estate industry group with interest in housing policy and development regulations."
+8,"Airbnb","$650K",Democratic,"Tech company with specific interest in short-term rental regulations and housing policy decisions."
+9,"California Medical Association","$625K",Democratic,"Physician advocacy group supporting Newsom's public health initiatives and medical practice regulations."
+10,"Walt Disney Company","$600K",Democratic,"Entertainment industry giant with interests in California's entertainment tax credits and tourism policies."
+11,"Lyft","$575K",Democratic,"Rideshare company with stakes in gig economy regulations and transportation policies."
+12,"Sierra Club","$525K",Democratic,"Environmental organization supporting Newsom's climate initiatives and environmental protection policies."
+13,"State Building & Construction Trades Council","$500K",Democratic,"Construction labor union supporting infrastructure projects and prevailing wage requirements."
+14,"Facebook (Meta)","$450K",Democratic,"Social media company with interest in tech regulation, data privacy laws, and digital economy initiatives."
+15,"California Professional Firefighters","$425K",Democratic,"First responder union supporting Newsom's disaster response funding and safety policies."
+16,"Planned Parenthood Affiliates of California","$400K",Democratic,"Healthcare provider supporting Newsom's reproductive rights policies and healthcare access initiatives."
+17,"Alphabet Inc. (Google)","$375K",Democratic,"Tech giant with interest in digital economy policies, AI regulation, and California's innovation ecosystem."
+18,"Pacific Gas & Electric","$350K",Democratic,"Utility company with interest in energy policy, wildfire liability, and infrastructure regulations."
+19,"California Federation of Teachers","$325K",Democratic,"Education union supporting school funding increases and teacher protections under Newsom."
+20,"Apple Inc.","$300K",Democratic,"Tech corporation supporting Newsom's innovation policies and business-friendly tech regulations."
+```
