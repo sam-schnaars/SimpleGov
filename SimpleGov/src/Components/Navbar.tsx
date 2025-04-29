@@ -67,7 +67,7 @@ const isActive = (path: string): boolean => {
         </div>
         
         {isMenuOpen && (
-          <div className="mt-2 bg-purple-800 rounded-md p-2 shadow-lg">
+          <div className="mt-2 bg-purple-400 rounded-md p-2 shadow-lg">
             <NavLink to="/" isActive={isActive('/')} mobile>
               Home
             </NavLink>
@@ -105,7 +105,7 @@ const NavLink = ({ to, children, isActive, mobile = false }: NavLinkProps) => {
     : "px-3 py-2 rounded-md text-sm";
   
   const activeClasses = isActive 
-    ? "bg-purple-800 text-white" 
+    ? "bg-purple-400 text-white" 
     : "text-purple-200 hover:text-white hover:bg-purple-800/50";
   
   return (
