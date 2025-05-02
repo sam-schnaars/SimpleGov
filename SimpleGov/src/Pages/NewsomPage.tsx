@@ -48,6 +48,8 @@ const NewsomPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+
+
   // Fetch data from Google Sheets on component mount
   useEffect(() => {
     const fetchAllData = async () => {
@@ -167,6 +169,61 @@ const NewsomPage = () => {
     setNewComment("");
   };
 
+  const convertToCSV = (data: any[], headers: string[]) => {
+    // Create header row
+    let csvContent = headers.join(',') + '\n';
+    
+    // Add data rows
+    data.forEach(item => {
+      const row = headers.map(header => {
+        // Get the value and handle special cases
+        let value = item[header.toLowerCase()];
+        
+        // Handle special case for party that has formatting
+        if (header.toLowerCase() === 'party') {
+          value = item.party;
+        }
+        
+        // Convert to string and handle commas (wrap in quotes if contains comma)
+        const strValue = String(value || '');
+        return strValue.includes(',') ? `"${strValue}"` : strValue;
+      });
+      
+      csvContent += row.join(',') + '\n';
+    });
+    
+    return csvContent;
+  };
+  
+  // Function to trigger the CSV download
+  const downloadCSV = (csvContent: string, filename: string) => {
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
+  // Now, add the export button and handlers within your App component
+  // Find the section with the donor table and add an export button
+  
+  /* Add this to your App component, just before the donor table section */
+  const handleExportDonors = () => {
+    const headers = ['Name', 'Amount', 'Party'];
+    const csvContent = convertToCSV(donorData, headers);
+    downloadCSV(csvContent, 'political_donors.csv');
+  };
+  
+  const handleExportLegislation = () => {
+    const headers = ['BillName', 'Status', 'SponsoredBy'];
+    const csvContent = convertToCSV(legislationData, headers);
+    downloadCSV(csvContent, 'legislation_data.csv');
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
 
@@ -189,9 +246,16 @@ const NewsomPage = () => {
               <div className="w-full md:w-1/3 bg-white rounded-lg shadow-md p-4 h-96 flex flex-col">
                 <div className="flex justify-between items-center mb-3">
                   <h2 className="text-lg font-semibold text-purple-700">Political Donors</h2>
-                  <div className="relative">
+                  <div className="relative mx-auto">
+                  <button 
+      className="px-3 py-1 bg-green-100 text-green-700 rounded-md flex items-center mr-2 mb-2"
+      onClick={handleExportDonors}
+    >
+      Export CSV
+    </button>
+                    
                     <button 
-                      className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md flex items-center"
+                      className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md flex items-center mb-2"
                       onClick={() => setDonorDropdownOpen(!donorDropdownOpen)}
                     >
                       Sort By: {donorSortField === "amount" ? "Amount" : 
@@ -289,6 +353,12 @@ const NewsomPage = () => {
                 <div className="flex justify-between items-center mb-3">
                   <h2 className="text-lg font-semibold text-purple-700">Legislation</h2>
                   <div className="relative">
+                  <button 
+      className="px-3 py-1 bg-green-100 text-green-700 rounded-md flex items-center mr-2 mb-2"
+      onClick={handleExportLegislation}
+    >
+      Export CSV
+    </button>
                     <button 
                       className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md flex items-center"
                       onClick={() => setLegislationDropdownOpen(!legislationDropdownOpen)}
